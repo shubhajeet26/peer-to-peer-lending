@@ -4,13 +4,18 @@ import { sorobanServer } from '../lib/stellar-sdk';
 import { BorrowerReputation, LenderReputation } from '../types/reputation';
 
 const DUMMY_ACCOUNT_ID = 'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF';
+const FALLBACK_CONTRACT_ID = 'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM';
 
 export class ReputationRegistryService {
   private contract: Contract;
 
   constructor(contractId?: string) {
     const id = contractId || STELLAR_CONFIG.reputationRegistryContractId;
-    this.contract = new Contract(id);
+    try {
+      this.contract = new Contract(id);
+    } catch {
+      this.contract = new Contract(FALLBACK_CONTRACT_ID);
+    }
   }
 
   async getBorrowerReputation(borrowerAddress: string): Promise<BorrowerReputation> {

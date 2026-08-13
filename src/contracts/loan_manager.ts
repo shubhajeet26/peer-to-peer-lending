@@ -4,13 +4,18 @@ import { sorobanServer } from '../lib/stellar-sdk';
 import { CreateLoanParams, Loan, LoanStatus } from '../types/loan';
 
 const DUMMY_ACCOUNT_ID = 'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF';
+const FALLBACK_CONTRACT_ID = 'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4';
 
 export class LoanManagerService {
   private contract: Contract;
 
   constructor(contractId?: string) {
     const id = contractId || STELLAR_CONFIG.loanManagerContractId;
-    this.contract = new Contract(id);
+    try {
+      this.contract = new Contract(id);
+    } catch {
+      this.contract = new Contract(FALLBACK_CONTRACT_ID);
+    }
   }
 
   getContractAddress(): string {
