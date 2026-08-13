@@ -68,6 +68,25 @@ fn test_borrower_reputation_lifecycle() {
 }
 
 #[test]
+fn test_lender_reputation_yield_accumulation() {
+    let (env, admin, loan_manager, client) = setup_test();
+    client.initialize(&admin, &loan_manager);
+
+    let lender = Address::generate(&env);
+
+    // Record funding
+    client.record_funding(&lender, &2_000_0000000);
+    let rep1 = client.get_lender_reputation(&lender);
+    assert_eq!(rep1.total_funded_loans, 1);
+    assert_eq!(rep1.total_amount_funded, 2_000_0000000);
+
+    // Record yield
+    client.record_yield(&lender, &200_0000000);
+    let rep2 = client.get_lender_reputation(&lender);
+    assert_eq!(rep2.total_yield_earned, 200_0000000);
+}
+
+#[test]
 fn test_default_penalty() {
     let (env, admin, loan_manager, client) = setup_test();
     client.initialize(&admin, &loan_manager);
@@ -95,4 +114,12 @@ fn test_score_limits() {
     }
     let rep = client.get_borrower_reputation(&borrower);
     assert_eq!(rep.credit_score, 300);
+
+    // 15 completions -> score should clamp to max 1000
+    let model_borrower = Address::generate(&env);
+    for _ in 0..15 {
+        client.record_completion(&model_borrower);
+    }
+    let rep_model = client.get_borrower_reputation(&model_borrower);
+    assert_eq!(rep_model.credit_score, 1000);
 }

@@ -167,6 +167,31 @@ fn test_default_handling() {
 }
 
 #[test]
+fn test_cannot_fund_cancelled_loan() {
+    let (env, _admin, _fee_collector, _token_admin, token_address, lm_client, _rep_client) =
+        setup_test();
+
+    let borrower = Address::generate(&env);
+    let lender = Address::generate(&env);
+    let purpose_hash = BytesN::from_array(&env, &[5u8; 32]);
+
+    let loan_id = lm_client.create_loan(
+        &borrower,
+        &token_address,
+        &1_000_0000000,
+        &1000,
+        &86400,
+        &1,
+        &purpose_hash,
+    );
+
+    lm_client.cancel_loan(&loan_id, &borrower);
+
+    let res = lm_client.try_fund_loan(&loan_id, &lender);
+    assert_eq!(res, Err(Ok(LoanError::InvalidState)));
+}
+
+#[test]
 fn test_invalid_parameter_validations() {
     let (env, _admin, _fee_collector, _token_admin, token, lm_client, _rep_client) = setup_test();
 
