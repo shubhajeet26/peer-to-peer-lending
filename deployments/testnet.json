@@ -1,0 +1,27 @@
+{
+  "network": "testnet",
+  "networkPassphrase": "Test SDF Network ; July 2015",
+  "rpcUrl": "https://soroban-testnet.stellar.org",
+  "horizonUrl": "https://horizon-testnet.stellar.org",
+  "deployedAt": "2026-08-15T14:00:00.000Z",
+  "deployer": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF",
+  "contracts": {
+    "reputationRegistry": {
+      "name": "reputation_registry",
+      "contractId": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+      "wasmHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "deploymentTxHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "initTxHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "explorerUrl": "https://stellar.expert/explorer/testnet/contract/CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
+    },
+    "loanManager": {
+      "name": "loan_manager",
+      "contractId": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4",
+      "wasmHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "deploymentTxHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "initTxHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "explorerUrl": "https://stellar.expert/explorer/testnet/contract/CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4"
+    }
+  },
+  "verificationStatus": "VERIFIED"
+}
