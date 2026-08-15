@@ -15,6 +15,9 @@ export const STELLAR_CONFIG = {
   reputationRegistryContractId:
     process.env.NEXT_PUBLIC_REPUTATION_REGISTRY_CONTRACT_ID ||
     'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM',
+  nativeTokenAddress:
+    process.env.NEXT_PUBLIC_NATIVE_TOKEN_ADDRESS ||
+    'CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC',
   explorerBaseUrl:
     process.env.NEXT_PUBLIC_EXPLORER_BASE_URL ||
     'https://stellar.expert/explorer/testnet',

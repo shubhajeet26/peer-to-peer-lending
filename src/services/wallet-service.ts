@@ -1,4 +1,4 @@
-import { getAddress, isConnected, signTransaction } from '@stellar/freighter-api';
+import { getAddress, isConnected, requestAccess, signTransaction } from '@stellar/freighter-api';
 import { STELLAR_CONFIG } from '../config/stellar';
 import { SupportedWalletId } from '../types/wallet';
 
@@ -19,14 +19,36 @@ export class WalletService {
 
   async connectWallet(walletId: SupportedWalletId): Promise<string> {
     if (walletId === 'freighter') {
-      const addrRes = await getAddress();
-      if (addrRes.error || !addrRes.address) {
-        throw new Error(addrRes.error || 'User declined wallet connection request');
+      // 1. Request access permission from Freighter extension (triggers connection modal)
+      try {
+        const accessRes = await requestAccess();
+        if (accessRes && accessRes.address) {
+          return accessRes.address;
+        }
+        if (accessRes && accessRes.error) {
+          const errMsg = typeof accessRes.error === 'string' ? accessRes.error : 'Freighter access request failed.';
+          throw new Error(errMsg);
+        }
+      } catch (err: any) {
+        if (err.message && (err.message.includes('declined') || err.message.includes('rejected'))) {
+          throw err;
+        }
       }
-      return addrRes.address;
+
+      // 2. Fallback to getAddress() if access was already authorized
+      const addrRes = await getAddress();
+      if (addrRes && addrRes.address) {
+        return addrRes.address;
+      }
+
+      const errorMessage = addrRes && addrRes.error
+        ? (typeof addrRes.error === 'string' ? addrRes.error : 'Connection denied by user')
+        : 'Freighter extension is locked or access request was cancelled. Please unlock Freighter and try again.';
+
+      throw new Error(errorMessage);
     }
 
-    throw new Error(`Wallet ${walletId} connection not supported in browser environment`);
+    throw new Error(`Wallet connector for "${walletId}" is coming soon. Please use Freighter Wallet for Soroban smart contracts.`);
   }
 
   async signTransaction(
@@ -41,7 +63,8 @@ export class WalletService {
         networkPassphrase: passphrase,
       });
       if (res.error || !res.signedTxXdr) {
-        throw new Error(res.error || 'User rejected transaction signature request');
+        const errMsg = typeof res.error === 'string' ? res.error : 'User rejected transaction signature request';
+        throw new Error(errMsg);
       }
       return res.signedTxXdr;
     }

@@ -13,7 +13,7 @@ describe('WalletConnectModal Component', () => {
   it('should render wallet extension options when isOpen is true', () => {
     render(<WalletConnectModal isOpen={true} onClose={vi.fn()} />);
     expect(screen.getByText(/Connect Stellar Wallet/i)).toBeInTheDocument();
-    expect(screen.getByText(/Freighter Wallet/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Freighter Wallet/i)[0]).toBeInTheDocument();
     expect(screen.getByText(/xbull/i)).toBeInTheDocument();
     expect(screen.getByText(/albedo/i)).toBeInTheDocument();
   });
