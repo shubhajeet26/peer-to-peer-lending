@@ -56,9 +56,11 @@ pub fn get_borrower_rep(env: &Env, borrower: &Address) -> BorrowerReputation {
         .persistent()
         .get::<DataKey, BorrowerReputation>(&key)
     {
-        env.storage()
-            .persistent()
-            .extend_ttl(&key, PERSISTENT_LIFETIME_THRESHOLD, PERSISTENT_BUMP_AMOUNT);
+        env.storage().persistent().extend_ttl(
+            &key,
+            PERSISTENT_LIFETIME_THRESHOLD,
+            PERSISTENT_BUMP_AMOUNT,
+        );
         rep
     } else {
         BorrowerReputation {
@@ -79,9 +81,11 @@ pub fn get_borrower_rep(env: &Env, borrower: &Address) -> BorrowerReputation {
 pub fn set_borrower_rep(env: &Env, borrower: &Address, rep: &BorrowerReputation) {
     let key = DataKey::BorrowerRep(borrower.clone());
     env.storage().persistent().set(&key, rep);
-    env.storage()
-        .persistent()
-        .extend_ttl(&key, PERSISTENT_LIFETIME_THRESHOLD, PERSISTENT_BUMP_AMOUNT);
+    env.storage().persistent().extend_ttl(
+        &key,
+        PERSISTENT_LIFETIME_THRESHOLD,
+        PERSISTENT_BUMP_AMOUNT,
+    );
 }
 
 pub fn get_lender_rep(env: &Env, lender: &Address) -> LenderReputation {
@@ -91,9 +95,11 @@ pub fn get_lender_rep(env: &Env, lender: &Address) -> LenderReputation {
         .persistent()
         .get::<DataKey, LenderReputation>(&key)
     {
-        env.storage()
-            .persistent()
-            .extend_ttl(&key, PERSISTENT_LIFETIME_THRESHOLD, PERSISTENT_BUMP_AMOUNT);
+        env.storage().persistent().extend_ttl(
+            &key,
+            PERSISTENT_LIFETIME_THRESHOLD,
+            PERSISTENT_BUMP_AMOUNT,
+        );
         rep
     } else {
         LenderReputation {
@@ -109,7 +115,9 @@ pub fn get_lender_rep(env: &Env, lender: &Address) -> LenderReputation {
 pub fn set_lender_rep(env: &Env, lender: &Address, rep: &LenderReputation) {
     let key = DataKey::LenderRep(lender.clone());
     env.storage().persistent().set(&key, rep);
-    env.storage()
-        .persistent()
-        .extend_ttl(&key, PERSISTENT_LIFETIME_THRESHOLD, PERSISTENT_BUMP_AMOUNT);
+    env.storage().persistent().extend_ttl(
+        &key,
+        PERSISTENT_LIFETIME_THRESHOLD,
+        PERSISTENT_BUMP_AMOUNT,
+    );
 }

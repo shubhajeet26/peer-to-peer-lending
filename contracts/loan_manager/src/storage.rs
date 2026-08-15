@@ -63,17 +63,21 @@ pub fn increment_loan_count(env: &Env) -> u64 {
 pub fn set_loan(env: &Env, loan: &Loan) {
     let key = DataKey::Loan(loan.id);
     env.storage().persistent().set(&key, loan);
-    env.storage()
-        .persistent()
-        .extend_ttl(&key, PERSISTENT_LIFETIME_THRESHOLD, PERSISTENT_BUMP_AMOUNT);
+    env.storage().persistent().extend_ttl(
+        &key,
+        PERSISTENT_LIFETIME_THRESHOLD,
+        PERSISTENT_BUMP_AMOUNT,
+    );
 }
 
 pub fn get_loan(env: &Env, loan_id: u64) -> Result<Loan, LoanError> {
     let key = DataKey::Loan(loan_id);
     if let Some(loan) = env.storage().persistent().get::<DataKey, Loan>(&key) {
-        env.storage()
-            .persistent()
-            .extend_ttl(&key, PERSISTENT_LIFETIME_THRESHOLD, PERSISTENT_BUMP_AMOUNT);
+        env.storage().persistent().extend_ttl(
+            &key,
+            PERSISTENT_LIFETIME_THRESHOLD,
+            PERSISTENT_BUMP_AMOUNT,
+        );
         Ok(loan)
     } else {
         Err(LoanError::LoanNotFound)

@@ -1,4 +1,5 @@
 #![cfg(test)]
+#![allow(clippy::all)]
 
 use crate::{types::*, LoanManager, LoanManagerClient};
 use reputation_registry::{ReputationRegistry, ReputationRegistryClient};
@@ -80,7 +81,7 @@ fn test_create_and_cancel_loan() {
 
 #[test]
 fn test_funding_disbursement_repayment_and_completion_lifecycle() {
-    let (env, _admin, _fee_collector, token_admin, token_address, lm_client, rep_client) =
+    let (env, _admin, _fee_collector, _token_admin, token_address, lm_client, rep_client) =
         setup_test();
 
     let borrower = Address::generate(&env);

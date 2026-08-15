@@ -1,0 +1,22 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci-status:
+    name: CI Pipeline Gateway
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pipeline Status
+        run: echo "StellarLend CI workflow triggered successfully."

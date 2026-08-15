@@ -1,28 +1,85 @@
 #![no_std]
 
-pub mod storage;
+mod storage;
 pub mod types;
 
 #[cfg(test)]
 mod test;
 
 use soroban_sdk::{
-    contract, contractclient, contractimpl, symbol_short, token, Address, BytesN, Env, Symbol,
+    contract, contractimpl, symbol_short, token, Address, BytesN, Env, IntoVal, Symbol,
 };
 use storage::*;
 use types::*;
 
-const BPS_BASE: u64 = 10_000;
+const BPS_BASE: u32 = 10_000;
 const SECONDS_PER_YEAR: u64 = 31_536_000;
 
-#[contractclient(name = "ReputationRegistryClient")]
-pub trait ReputationRegistryInterface {
-    fn record_loan_created(env: Env, borrower: Address, amount: i128);
-    fn record_funding(env: Env, lender: Address, amount: i128);
-    fn record_repayment(env: Env, borrower: Address, amount_paid: i128, on_time: bool);
-    fn record_completion(env: Env, borrower: Address);
-    fn record_default(env: Env, borrower: Address, amount_defaulted: i128);
-    fn record_yield(env: Env, lender: Address, yield_amount: i128);
+pub struct ReputationRegistryClient {
+    pub env: Env,
+    pub address: Address,
+}
+
+impl ReputationRegistryClient {
+    pub fn new(env: &Env, address: &Address) -> Self {
+        Self {
+            env: env.clone(),
+            address: address.clone(),
+        }
+    }
+
+    pub fn record_loan_created(&self, borrower: &Address, amount: &i128) {
+        self.env.invoke_contract::<()>(
+            &self.address,
+            &Symbol::new(&self.env, "record_loan_created"),
+            soroban_sdk::vec![&self.env, borrower.into_val(&self.env), amount.into_val(&self.env)],
+        );
+    }
+
+    pub fn record_funding(&self, lender: &Address, amount: &i128) {
+        self.env.invoke_contract::<()>(
+            &self.address,
+            &Symbol::new(&self.env, "record_funding"),
+            soroban_sdk::vec![&self.env, lender.into_val(&self.env), amount.into_val(&self.env)],
+        );
+    }
+
+    pub fn record_repayment(&self, borrower: &Address, amount: &i128, on_time: &bool) {
+        self.env.invoke_contract::<()>(
+            &self.address,
+            &Symbol::new(&self.env, "record_repayment"),
+            soroban_sdk::vec![
+                &self.env,
+                borrower.into_val(&self.env),
+                amount.into_val(&self.env),
+                on_time.into_val(&self.env)
+            ],
+        );
+    }
+
+    pub fn record_completion(&self, borrower: &Address) {
+        self.env.invoke_contract::<()>(
+            &self.address,
+            &Symbol::new(&self.env, "record_completion"),
+            soroban_sdk::vec![&self.env, borrower.into_val(&self.env)],
+        );
+    }
+
+    pub fn record_default(&self, borrower: &Address, amount: &i128) {
+        self.env.invoke_contract::<()>(
+            &self.address,
+            &Symbol::new(&self.env, "record_default"),
+            soroban_sdk::vec![&self.env, borrower.into_val(&self.env), amount.into_val(&self.env)],
+        );
+    }
+
+    pub fn record_yield(&self, lender: &Address, yield_amount: &i128) {
+        self.env.invoke_contract::<()>(
+            &self.address,
+            &Symbol::new(&self.env, "record_yield"),
+            soroban_sdk::vec![&self.env, lender.into_val(&self.env), yield_amount.into_val(&self.env)],
+        );
+    }
 }
 
 #[contract]
@@ -30,7 +87,7 @@ pub struct LoanManager;
 
 #[contractimpl]
 impl LoanManager {
-    /// Initialize the LoanManager contract with admin, reputation registry address, and fee parameters.
+    /// Initialize LoanManager contract configuration and admin access.
     pub fn initialize(
         env: Env,
         admin: Address,
@@ -38,12 +95,11 @@ impl LoanManager {
         platform_fee_bps: u32,
         fee_collector: Address,
     ) -> Result<(), LoanError> {
+        admin.require_auth();
+
         if is_initialized(&env) {
             return Err(LoanError::AlreadyInitialized);
         }
-
-        admin.require_auth();
-
         if platform_fee_bps > 1000 {
             // Max 10% fee limit
             return Err(LoanError::InvalidConfiguration);
@@ -58,66 +114,66 @@ impl LoanManager {
         set_admin(&env, &admin);
         set_config(&env, &config);
         set_initialized(&env);
+
         extend_instance_ttl(&env);
 
-        env.events().publish(
-            (symbol_short!("init"), admin),
-            config.reputation_contract,
-        );
+        env.events()
+            .publish((symbol_short!("init"), admin), config.platform_fee_bps);
 
         Ok(())
     }
 
-    /// Admin update authorized reputation contract address.
-    pub fn set_reputation_contract(
+    /// Update contract WASM code (Admin only).
+    pub fn upgrade(env: Env, new_wasm_hash: BytesN<32>) -> Result<(), LoanError> {
+        let admin = get_admin(&env)?;
+        admin.require_auth();
+
+        env.deployer().update_current_contract_wasm(new_wasm_hash);
+
+        extend_instance_ttl(&env);
+
+        env.events()
+            .publish((symbol_short!("upgrade"), admin), ());
+
+        Ok(())
+    }
+
+    /// Update platform configuration (Admin only).
+    pub fn update_config(
         env: Env,
-        new_reputation_contract: Address,
+        new_reputation_contract: Option<Address>,
+        new_fee_bps: Option<u32>,
+        new_fee_collector: Option<Address>,
     ) -> Result<(), LoanError> {
         let admin = get_admin(&env)?;
         admin.require_auth();
 
         let mut config = get_config(&env)?;
-        config.reputation_contract = new_reputation_contract;
+
+        if let Some(rep) = new_reputation_contract {
+            config.reputation_contract = rep;
+        }
+        if let Some(fee_bps) = new_fee_bps {
+            if fee_bps > 1000 {
+                return Err(LoanError::InvalidConfiguration);
+            }
+            config.platform_fee_bps = fee_bps;
+        }
+        if let Some(collector) = new_fee_collector {
+            config.fee_collector = collector;
+        }
+
         set_config(&env, &config);
         extend_instance_ttl(&env);
 
-        env.events().publish(
-            (symbol_short!("set_rep"), admin),
-            config.reputation_contract,
-        );
-
-        Ok(())
-    }
-
-    /// Admin update admin address.
-    pub fn set_admin(env: Env, new_admin: Address) -> Result<(), LoanError> {
-        let admin = get_admin(&env)?;
-        admin.require_auth();
-
-        set_admin(&env, &new_admin);
-        extend_instance_ttl(&env);
-
         env.events()
-            .publish((symbol_short!("set_adm"), admin), new_admin);
-
-        Ok(())
-    }
-
-    /// Soroban WASM Contract Upgrade endpoint (Admin authorization required).
-    pub fn upgrade(env: Env, new_wasm_hash: BytesN<32>) -> Result<(), LoanError> {
-        let admin = get_admin(&env)?;
-        admin.require_auth();
-
-        env.deployer().update_current_contract_wasm(new_wasm_hash.clone());
-        extend_instance_ttl(&env);
-
-        env.events()
-            .publish((symbol_short!("upgrade"), admin), new_wasm_hash);
+            .publish((symbol_short!("config"), admin), config.platform_fee_bps);
 
         Ok(())
     }
 
     /// Borrower creates a new loan request.
+    #[allow(clippy::too_many_arguments, clippy::manual_range_contains)]
     pub fn create_loan(
         env: Env,
         borrower: Address,
@@ -223,10 +279,8 @@ impl LoanManager {
         set_loan(&env, &loan);
         extend_instance_ttl(&env);
 
-        env.events().publish(
-            (Symbol::new(&env, "loan_cancel"), loan_id),
-            borrower,
-        );
+        env.events()
+            .publish((Symbol::new(&env, "loan_cancel"), loan_id), borrower);
 
         Ok(())
     }
@@ -278,7 +332,11 @@ impl LoanManager {
         extend_instance_ttl(&env);
 
         env.events().publish(
-            (Symbol::new(&env, "loan_disburse"), loan_id, loan.borrower.clone()),
+            (
+                Symbol::new(&env, "loan_disburse"),
+                loan_id,
+                loan.borrower.clone(),
+            ),
             loan.principal,
         );
 
@@ -352,7 +410,11 @@ impl LoanManager {
             rep_client.record_yield(&lender, &interest_earned);
 
             env.events().publish(
-                (Symbol::new(&env, "loan_complete"), loan_id, loan.borrower.clone()),
+                (
+                    Symbol::new(&env, "loan_complete"),
+                    loan_id,
+                    loan.borrower.clone(),
+                ),
                 loan.total_repayment_amount,
             );
         }
@@ -361,7 +423,11 @@ impl LoanManager {
 
         env.events().publish(
             (Symbol::new(&env, "loan_repay"), loan_id, payer),
-            (amount, loan.total_repayment_amount - loan.amount_repaid, on_time),
+            (
+                amount,
+                loan.total_repayment_amount - loan.amount_repaid,
+                on_time,
+            ),
         );
 
         Ok(())
@@ -397,7 +463,11 @@ impl LoanManager {
         extend_instance_ttl(&env);
 
         env.events().publish(
-            (Symbol::new(&env, "loan_default"), loan_id, loan.borrower.clone()),
+            (
+                Symbol::new(&env, "loan_default"),
+                loan_id,
+                loan.borrower.clone(),
+            ),
             remaining,
         );
 

@@ -32,10 +32,8 @@ impl ReputationRegistry {
         set_initialized(&env);
         extend_instance_ttl(&env);
 
-        env.events().publish(
-            (symbol_short!("init"), admin),
-            loan_manager,
-        );
+        env.events()
+            .publish((symbol_short!("init"), admin), loan_manager);
 
         Ok(())
     }
@@ -48,10 +46,8 @@ impl ReputationRegistry {
         set_loan_manager(&env, &new_loan_manager);
         extend_instance_ttl(&env);
 
-        env.events().publish(
-            (symbol_short!("set_lm"), admin),
-            new_loan_manager,
-        );
+        env.events()
+            .publish((symbol_short!("set_lm"), admin), new_loan_manager);
 
         Ok(())
     }
@@ -72,20 +68,14 @@ impl ReputationRegistry {
         set_borrower_rep(&env, &borrower, &rep);
         extend_instance_ttl(&env);
 
-        env.events().publish(
-            (Symbol::new(&env, "loan_req"), borrower),
-            amount,
-        );
+        env.events()
+            .publish((Symbol::new(&env, "loan_req"), borrower), amount);
 
         Ok(())
     }
 
     /// Record funding contribution by a lender (called by loan_manager).
-    pub fn record_funding(
-        env: Env,
-        lender: Address,
-        amount: i128,
-    ) -> Result<(), ReputationError> {
+    pub fn record_funding(env: Env, lender: Address, amount: i128) -> Result<(), ReputationError> {
         Self::require_loan_manager_auth(&env)?;
 
         let mut rep = get_lender_rep(&env, &lender);
@@ -96,10 +86,8 @@ impl ReputationRegistry {
         set_lender_rep(&env, &lender, &rep);
         extend_instance_ttl(&env);
 
-        env.events().publish(
-            (Symbol::new(&env, "fund_req"), lender),
-            amount,
-        );
+        env.events()
+            .publish((Symbol::new(&env, "fund_req"), lender), amount);
 
         Ok(())
     }
@@ -147,10 +135,8 @@ impl ReputationRegistry {
         set_borrower_rep(&env, &borrower, &rep);
         extend_instance_ttl(&env);
 
-        env.events().publish(
-            (Symbol::new(&env, "comp_rec"), borrower),
-            rep.credit_score,
-        );
+        env.events()
+            .publish((Symbol::new(&env, "comp_rec"), borrower), rep.credit_score);
 
         Ok(())
     }
@@ -171,10 +157,8 @@ impl ReputationRegistry {
         set_borrower_rep(&env, &borrower, &rep);
         extend_instance_ttl(&env);
 
-        env.events().publish(
-            (Symbol::new(&env, "def_rec"), borrower),
-            rep.credit_score,
-        );
+        env.events()
+            .publish((Symbol::new(&env, "def_rec"), borrower), rep.credit_score);
 
         Ok(())
     }
@@ -194,10 +178,8 @@ impl ReputationRegistry {
         set_lender_rep(&env, &lender, &rep);
         extend_instance_ttl(&env);
 
-        env.events().publish(
-            (Symbol::new(&env, "yield_rec"), lender),
-            yield_amount,
-        );
+        env.events()
+            .publish((Symbol::new(&env, "yield_rec"), lender), yield_amount);
 
         Ok(())
     }
