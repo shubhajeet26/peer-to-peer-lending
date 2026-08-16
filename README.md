@@ -23,7 +23,7 @@
 10. [Repository Structure](#10-repository-structure)
 11. [Technology Stack](#11-technology-stack)
 12. [Local Development & Installation](#12-local-development--installation)
-13. [Environment Variables](#13-environment-variables)
+13. [Environment Variables & Deployed Smart Contracts](#13-environment-variables--deployed-smart-contracts)
 14. [Testing Suite](#14-testing-suite)
 15. [Production CI/CD Pipeline](#15-production-cicd-pipeline)
 16. [Stellar Testnet Deployment & Contract Addresses](#16-stellar-testnet-deployment--contract-addresses)
@@ -307,7 +307,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 13. Environment Variables
+## 13. Environment Variables & Deployed Smart Contracts
 
 See [`.env.example`](file:///.env.example) for public network variables:
 
@@ -319,12 +319,18 @@ NEXT_PUBLIC_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
 NEXT_PUBLIC_STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org
 
 # Deployed Soroban Smart Contract Addresses (Testnet)
-NEXT_PUBLIC_LOAN_MANAGER_CONTRACT_ID=CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4
-NEXT_PUBLIC_REPUTATION_REGISTRY_CONTRACT_ID=CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM
+NEXT_PUBLIC_LOAN_MANAGER_CONTRACT_ID=CAJLLUTXDVDDYPK5RZJLYHWQN3TG5C2EQ6WXCLHQ3BDFDBN4TEI45ZHV
+NEXT_PUBLIC_REPUTATION_REGISTRY_CONTRACT_ID=CCMVH2MWATITZQNNYFWQVDDMVGZHFZHQWLZOOZXF2TCIP6UIFANOCXMM
 
 # Stellar Block Explorer Base URL
 NEXT_PUBLIC_EXPLORER_BASE_URL=https://stellar.expert/explorer/testnet
 ```
+
+- 1st Deployed Contract (Loan Manager)
+<img width="1920" height="1080" alt="Screenshot (667)" src="https://github.com/user-attachments/assets/f7417b54-c736-494c-9781-f41da4e08453" />
+
+- 2nd Deployed Contract (Reputation Registry)
+<img width="1920" height="1080" alt="Screenshot (668)" src="https://github.com/user-attachments/assets/85ac81c6-eeac-4111-869e-2cc24297b513" />
 
 ---
 
