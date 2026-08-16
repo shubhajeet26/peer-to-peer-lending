@@ -23,8 +23,15 @@ export class LoanManagerService {
   }
 
   buildCreateLoanOperation(params: CreateLoanParams): xdr.Operation {
+    let tokenAddress = params.token;
+    try {
+      new Address(tokenAddress);
+    } catch {
+      tokenAddress = STELLAR_CONFIG.nativeTokenAddress;
+    }
+
     const borrowerSc = new Address(params.borrower).toScVal();
-    const tokenSc = new Address(params.token).toScVal();
+    const tokenSc = new Address(tokenAddress).toScVal();
     const principalSc = nativeToScVal(params.principal, { type: 'i128' });
     const aprSc = nativeToScVal(params.interestRateBps, { type: 'u32' });
     const durationSc = nativeToScVal(params.durationSeconds, { type: 'u64' });
