@@ -303,7 +303,8 @@ cp .env.example .env.local
 # 5. Start Local Next.js Development Server
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Live URL of the Website:
+Link: https://peer-to-peer-lending.vercel.app/
 
 ---
 
