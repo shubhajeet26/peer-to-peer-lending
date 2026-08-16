@@ -1,8 +1,10 @@
+import { Networks } from '@stellar/stellar-sdk';
+
 export const STELLAR_CONFIG = {
   network: process.env.NEXT_PUBLIC_STELLAR_NETWORK || 'testnet',
   networkPassphrase:
     process.env.NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE ||
-    'Test SDF Network ; July 2015',
+    Networks.TESTNET,
   rpcUrl:
     process.env.NEXT_PUBLIC_SOROBAN_RPC_URL ||
     'https://soroban-testnet.stellar.org',
@@ -11,10 +13,10 @@ export const STELLAR_CONFIG = {
     'https://horizon-testnet.stellar.org',
   loanManagerContractId:
     process.env.NEXT_PUBLIC_LOAN_MANAGER_CONTRACT_ID ||
-    'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4',
+    'CAJLLUTXDVDDYPK5RZJLYHWQN3TG5C2EQ6WXCLHQ3BDFDBN4TEI45ZHV',
   reputationRegistryContractId:
     process.env.NEXT_PUBLIC_REPUTATION_REGISTRY_CONTRACT_ID ||
-    'CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM',
+    'CCMVH2MWATITZQNNYFWQVDDMVGZHFZHQWLZOOZXF2TCIP6UIFANOCXMM',
   nativeTokenAddress:
     process.env.NEXT_PUBLIC_NATIVE_TOKEN_ADDRESS ||
     'CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC',

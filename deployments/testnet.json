@@ -1,27 +1,32 @@
 {
   "network": "testnet",
-  "networkPassphrase": "Test SDF Network ; July 2015",
+  "networkPassphrase": "Test SDF Network ; September 2015",
   "rpcUrl": "https://soroban-testnet.stellar.org",
   "horizonUrl": "https://horizon-testnet.stellar.org",
-  "deployedAt": "2026-08-15T14:00:00.000Z",
-  "deployer": "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF",
+  "deployedAt": "2026-08-15T21:05:30.000Z",
+  "deployer": "GBXCYAHNMBU5CIUGBUJNOTCMBLOMDL4CQHGWXNLV3Q2BZKQDJXUT3RHQ",
   "contracts": {
     "reputationRegistry": {
       "name": "reputation_registry",
-      "contractId": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
-      "wasmHash": "0000000000000000000000000000000000000000000000000000000000000000",
-      "deploymentTxHash": "0000000000000000000000000000000000000000000000000000000000000000",
-      "initTxHash": "0000000000000000000000000000000000000000000000000000000000000000",
-      "explorerUrl": "https://stellar.expert/explorer/testnet/contract/CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
+      "contractId": "CCMVH2MWATITZQNNYFWQVDDMVGZHFZHQWLZOOZXF2TCIP6UIFANOCXMM",
+      "wasmHash": "c065ee5fcb8aaccc6831e329f0c1589a63e421492237bef18aac4ea737806183",
+      "deploymentTxHash": "053d3c07de3aed6f682d936075b4d1860b5bad7f27fd12d9881024a5e36ba755",
+      "initTxHash": "db223eb918b2c2eb9af34bf99b24479524e10cecfbc92e6aa1bfdf1f95be3e7f",
+      "explorerUrl": "https://stellar.expert/explorer/testnet/contract/CCMVH2MWATITZQNNYFWQVDDMVGZHFZHQWLZOOZXF2TCIP6UIFANOCXMM"
     },
     "loanManager": {
       "name": "loan_manager",
-      "contractId": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4",
-      "wasmHash": "0000000000000000000000000000000000000000000000000000000000000000",
-      "deploymentTxHash": "0000000000000000000000000000000000000000000000000000000000000000",
-      "initTxHash": "0000000000000000000000000000000000000000000000000000000000000000",
-      "explorerUrl": "https://stellar.expert/explorer/testnet/contract/CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4"
+      "contractId": "CAJLLUTXDVDDYPK5RZJLYHWQN3TG5C2EQ6WXCLHQ3BDFDBN4TEI45ZHV",
+      "wasmHash": "711aaf2263c29e78c2d57a3843ccc2b8f621a5d54751f20552476b0830d2190f",
+      "deploymentTxHash": "9adff51b86545e259e8fea4860bb164dfae30cece0bc80fa73eeb6d9c592c0ba",
+      "initTxHash": "8dc6580e6af52b30a643ca3b57c736ec0bfa053cb80359982b0e7bcdc465608e",
+      "explorerUrl": "https://stellar.expert/explorer/testnet/contract/CAJLLUTXDVDDYPK5RZJLYHWQN3TG5C2EQ6WXCLHQ3BDFDBN4TEI45ZHV"
     }
+  },
+  "testTransaction": {
+    "type": "create_loan",
+    "hash": "caabbddf4fe57589a9411a915bc5ea33592b546fcd6ed9cf13c61bd6981959a1",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/caabbddf4fe57589a9411a915bc5ea33592b546fcd6ed9cf13c61bd6981959a1"
   },
   "verificationStatus": "VERIFIED"
 }

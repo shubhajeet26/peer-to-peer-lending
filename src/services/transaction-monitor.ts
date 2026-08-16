@@ -1,7 +1,7 @@
-import { rpc } from '@stellar/stellar-sdk';
-import { getTxExplorerUrl, sorobanServer } from '../lib/stellar-sdk';
+import { getTxExplorerUrl } from '../lib/stellar-sdk';
 import { useTransactionStore } from '../stores/useTransactionStore';
 import { TransactionStatus } from '../types/transaction';
+import { getSorobanTransactionStatus } from './transaction-service';
 
 export class TransactionMonitorService {
   private activePollers: Map<string, NodeJS.Timeout> = new Map();
@@ -22,15 +22,15 @@ export class TransactionMonitorService {
     const timer = setInterval(async () => {
       attempts++;
       try {
-        const txRes = await sorobanServer.getTransaction(hash);
+        const txRes = await getSorobanTransactionStatus(hash);
 
-        if (txRes.status === rpc.Api.GetTransactionStatus.SUCCESS) {
+        if (txRes.status === 'SUCCESS') {
           this.stopMonitoring(txId);
           useTransactionStore.getState().updateTransactionStatus(txId, 'confirmed', hash);
           onStatusChange?.('confirmed');
-        } else if (txRes.status === rpc.Api.GetTransactionStatus.FAILED) {
+        } else if (txRes.status === 'FAILED') {
           this.stopMonitoring(txId);
-          const errorMsg = 'Transaction failed on-chain execution';
+          const errorMsg = txRes.error || 'Transaction failed on-chain execution';
           useTransactionStore.getState().updateTransactionStatus(txId, 'failed', hash, errorMsg);
           onStatusChange?.('failed');
         } else if (attempts >= maxAttempts) {

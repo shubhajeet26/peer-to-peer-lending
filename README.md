@@ -314,7 +314,7 @@ See [`.env.example`](file:///.env.example) for public network variables:
 ```bash
 # Stellar Network Configuration
 NEXT_PUBLIC_STELLAR_NETWORK=testnet
-NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE="Test SDF Network ; July 2015"
+NEXT_PUBLIC_STELLAR_NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
 NEXT_PUBLIC_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
 NEXT_PUBLIC_STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org
 
@@ -372,8 +372,13 @@ Automated quality gates are implemented via GitHub Actions workflows in `.github
 
 | Contract Name | Contract ID | Network | Explorer Link |
 |---|---|---|---|
-| **`loan_manager`** | `CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4` | Stellar Testnet | [View on StellarExpert](https://stellar.expert/explorer/testnet/contract/CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSC4) |
-| **`reputation_registry`** | `CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM` | Stellar Testnet | [View on StellarExpert](https://stellar.expert/explorer/testnet/contract/CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM) |
+| **`loan_manager`** | `CAJLLUTXDVDDYPK5RZJLYHWQN3TG5C2EQ6WXCLHQ3BDFDBN4TEI45ZHV` | Stellar Testnet | [View on StellarExpert](https://stellar.expert/explorer/testnet/contract/CAJLLUTXDVDDYPK5RZJLYHWQN3TG5C2EQ6WXCLHQ3BDFDBN4TEI45ZHV) |
+| **`reputation_registry`** | `CCMVH2MWATITZQNNYFWQVDDMVGZHFZHQWLZOOZXF2TCIP6UIFANOCXMM` | Stellar Testnet | [View on StellarExpert](https://stellar.expert/explorer/testnet/contract/CCMVH2MWATITZQNNYFWQVDDMVGZHFZHQWLZOOZXF2TCIP6UIFANOCXMM) |
+
+### Real On-Chain Initialization & Verification Hashes
+- **`loan_manager` Initialization TX**: [`8dc6580e6af52b30a643ca3b57c736ec0bfa053cb80359982b0e7bcdc465608e`](https://stellar.expert/explorer/testnet/tx/8dc6580e6af52b30a643ca3b57c736ec0bfa053cb80359982b0e7bcdc465608e)
+- **`reputation_registry` Initialization TX**: [`db223eb918b2c2eb9af34bf99b24479524e10cecfbc92e6aa1bfdf1f95be3e7f`](https://stellar.expert/explorer/testnet/tx/db223eb918b2c2eb9af34bf99b24479524e10cecfbc92e6aa1bfdf1f95be3e7f)
+- **Verified Cross-Contract Test Transaction TX**: [`caabbddf4fe57589a9411a915bc5ea33592b546fcd6ed9cf13c61bd6981959a1`](https://stellar.expert/explorer/testnet/tx/caabbddf4fe57589a9411a915bc5ea33592b546fcd6ed9cf13c61bd6981959a1)
 
 ### Testnet Deployment Execution
 To deploy fresh contract instances to Stellar Testnet:

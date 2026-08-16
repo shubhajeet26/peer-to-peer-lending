@@ -6,6 +6,51 @@ import { SupportedWalletId } from '../types/wallet';
 import { TransactionResult, TransactionStatus } from '../types/transaction';
 import { walletService } from './wallet-service';
 
+export async function getSorobanTransactionStatus(hash: string): Promise<{
+  status: 'SUCCESS' | 'FAILED' | 'NOT_FOUND';
+  error?: string;
+}> {
+  try {
+    const txRes = await sorobanServer.getTransaction(hash);
+    if (txRes.status === rpc.Api.GetTransactionStatus.SUCCESS) {
+      return { status: 'SUCCESS' };
+    }
+    if (txRes.status === rpc.Api.GetTransactionStatus.FAILED) {
+      return { status: 'FAILED', error: 'Transaction failed on-chain execution' };
+    }
+    if (txRes.status === rpc.Api.GetTransactionStatus.NOT_FOUND) {
+      return { status: 'NOT_FOUND' };
+    }
+  } catch {
+    // If SDK internal XDR parser throws Bad union switch on diagnostic events, query JSON-RPC directly
+    try {
+      const response = await fetch(STELLAR_CONFIG.rpcUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'getTransaction',
+          params: { hash },
+        }),
+      });
+      const json = await response.json();
+      if (json.result && json.result.status) {
+        const rawStatus = String(json.result.status).toUpperCase();
+        if (rawStatus === 'SUCCESS') {
+          return { status: 'SUCCESS' };
+        }
+        if (rawStatus === 'FAILED') {
+          return { status: 'FAILED', error: 'Transaction failed on-chain execution' };
+        }
+      }
+    } catch {
+      // Ignore
+    }
+  }
+  return { status: 'NOT_FOUND' };
+}
+
 export class TransactionService {
   async executeTransaction(
     senderAddress: string,
@@ -19,7 +64,7 @@ export class TransactionService {
       const accountResponse = await horizonServer.loadAccount(senderAddress);
       const sourceAccount = new Account(senderAddress, accountResponse.sequenceNumber());
 
-      let transaction = new TransactionBuilder(sourceAccount, {
+      const transaction = new TransactionBuilder(sourceAccount, {
         fee: '100000',
         networkPassphrase: STELLAR_CONFIG.networkPassphrase,
       })
@@ -59,11 +104,11 @@ export class TransactionService {
       const hash = sendResult.hash;
 
       // 5. Polling for Confirmation
-      let statusResult = await sorobanServer.getTransaction(hash);
+      let statusResult = await getSorobanTransactionStatus(hash);
       let attempts = 0;
       while (statusResult.status === 'NOT_FOUND' && attempts < 10) {
         await new Promise((res) => setTimeout(res, 1500));
-        statusResult = await sorobanServer.getTransaction(hash);
+        statusResult = await getSorobanTransactionStatus(hash);
         attempts++;
       }
 
@@ -80,7 +125,7 @@ export class TransactionService {
         return {
           status: 'failed',
           hash,
-          error: 'Transaction failed on-chain',
+          error: statusResult.error || 'Transaction failed on-chain',
           explorerUrl: getTxExplorerUrl(hash),
           timestamp: Date.now(),
         };

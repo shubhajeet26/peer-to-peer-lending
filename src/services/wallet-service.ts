@@ -1,4 +1,4 @@
-import { getAddress, isConnected, requestAccess, signTransaction } from '@stellar/freighter-api';
+import { getAddress, getNetworkDetails, isConnected, requestAccess, signTransaction } from '@stellar/freighter-api';
 import { STELLAR_CONFIG } from '../config/stellar';
 import { SupportedWalletId } from '../types/wallet';
 
@@ -56,9 +56,18 @@ export class WalletService {
     walletId: SupportedWalletId,
     networkPassphrase?: string
   ): Promise<string> {
-    const passphrase = networkPassphrase || STELLAR_CONFIG.networkPassphrase;
+    let passphrase = networkPassphrase || STELLAR_CONFIG.networkPassphrase;
 
     if (walletId === 'freighter') {
+      try {
+        const netDetails = await getNetworkDetails();
+        if (netDetails && netDetails.networkPassphrase) {
+          passphrase = netDetails.networkPassphrase;
+        }
+      } catch {
+        // Fallback to default configured passphrase
+      }
+
       const res = await signTransaction(xdr, {
         networkPassphrase: passphrase,
       });
