@@ -428,19 +428,20 @@ ADMIN_SECRET_KEY=S... npm run contracts:upgrade
 
 ### Screenshots of the Website
 - **Landing Page & Hero**: Glassmorphic UI introducing platform features.
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/28768d01-7716-4f92-9c42-2bef57af096a" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/28768d01-7716-4f92-9c42-2bef57af096a" />
 
 - **Loan Marketplace**: Filterable loan request list with collateral APR badges.
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b4f391c3-926d-4ef2-b3c7-d95a1a1e7b6d" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b4f391c3-926d-4ef2-b3c7-d95a1a1e7b6d" />
 
 - **Borrower & Lender Dashboards**: Active loan tracking and repayment schedules.
   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f5d05c80-12ba-48f8-8b76-29444e7fcc32" />
   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1ed84517-305e-408f-a779-c064116dacfb" />
 
 - **Analytics & Credit Score Gauge**: Interactive portfolio metrics and visual credit rating gauge (300-1000).
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9f734cdc-dc38-45e4-a3b8-71de7e81f8fe" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9f734cdc-dc38-45e4-a3b8-71de7e81f8fe" />
 
-
+### Demo Video Link of the Website:
+Drive Link: https://drive.google.com/drive/folders/1Bf2Fklvwy_zyOe1sijHrKzh2_6Viqd8b?dmr=1&ec=wgc-drive-%5Bmodule%5D-goto
 
 ---
 
